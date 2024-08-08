@@ -8,13 +8,13 @@ const PlaceholderImage = require ('./assets/images/background-image.png');
 export default function App() {
   return (
     <View style={styles.container}>
-        <View style={styles.imageContainer}>
-          <ImageViewer placeholderImageSource = {PlaceholderImage} />
-        </View>
-        <View>
-          <Button theme = "primary" label="Choose a photo" />
-          <Button label="" />
-        </View>
+      <View style={styles.imageContainer}>
+        <ImageViewer placeholderImageSource= {PlaceholderImage}/>
+      </View>
+      <View style={styles.footerContainer}>
+        <Button theme="primary" label="Choose a photo" />
+        <Button label="Use this photo" />
+      </View>
       <StatusBar style="auto" />
     </View>
   );
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#25292e',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   imageContainer: {
