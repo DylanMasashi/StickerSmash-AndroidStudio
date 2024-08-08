@@ -28,7 +28,6 @@ export default function Button({ label, theme }) {
       </Pressable>
     </View>
   );
-}
 
 const styles = StyleSheet.create({
   buttonContainer: {
