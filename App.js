@@ -26,6 +26,10 @@ export default function App() {
   const [showAppOptions, setShowAppOptions] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const imageRef = useRef();
+
+  if (status !== 'null') {
+    requestPermission();
+  }
   // ...rest of the import statements remain unchanged
    const pickImageAsync = async () => {
      let result = await ImagePicker.launchImageLibraryAsync({
@@ -51,15 +55,50 @@ export default function App() {
   const onModalClose = () => {
     setIsModalVisible(false);
   };
+
+  const onSaveImageAsync = async () => {
+    if (Platform.OS !== 'web') {
+      try {
+        const localUri = await captureRef(imageRef, {
+          height: 440,
+          quality: 1,
+        });
+        await MediaLibrary.saveToLibraryAsync(localUri);
+        if (localUri) {
+          alert('Saved!');
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      try {
+        const dataUrl = await domtoimage.toJpeg(imageRef.current, {
+          quality: 0.95,
+          width: 320,
+          height: 440,
+        });
+  
+        let link = document.createElement('a');
+        link.download = 'sticker-smash.jpeg';
+        link.href = dataUrl;
+        link.click();
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+  
  
   return (
     <GestureHandlerRootView style={styles.container}>
       <View style={styles.imageContainer}>
-        <ImageViewer
-            placeholderImageSource={PlaceholderImage}
-            selectedImage={selectedImage}
+        <View ref={imageRef} collapsable={false} >
+          <ImageViewer
+              placeholderImageSource={PlaceholderImage}
+              selectedImage={selectedImage}
           />
-        {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
+          {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
+        </View>
       </View>
       {showAppOptions ? (
         <View style={styles.optionsContainer}>
@@ -78,9 +117,9 @@ export default function App() {
       <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
         <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
       </EmojiPicker>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
     </GestureHandlerRootView>
-  )
+  );
 }
 
 
